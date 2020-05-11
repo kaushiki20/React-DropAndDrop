@@ -56,8 +56,8 @@ p {
 }
 
 .dropArea {
-  color: white !important;
-  background: white !important;
+  color: #3d3d3d !important;
+  background: #ff4d4d;
   position: relative;
 }
 .dropArea:before {
@@ -73,4 +73,14 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.label {
+  margin-right: 20px;
+  font-size: 30px;
+}
+
+.inp {
+  padding: 12px 20px;
+  border-radius: 20px;
 }

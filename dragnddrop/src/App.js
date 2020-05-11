@@ -20,6 +20,7 @@ const initialDNDState = {
 
 function App() {
   const [list, setList] = useState(items);
+  const [user, setUser] = useState("");
   const [dragAndDrop, setDragAndDrop] = useState(initialDNDState);
 
   const onDragStart = (event) => {
@@ -86,9 +87,37 @@ function App() {
     });
   };
 
+  const handleSubmit = (e) => {
+    //setList([...list, { number: list.length + 1, title: user }]);
+
+    const val = user;
+    if (e.keyCode == 13 && val) {
+      setList([...list, { number: list.length + 1, title: val }]);
+      setUser("");
+    }
+  };
+
+  const handleRemove = (i) => {
+    let newList = [...list];
+    newList.splice(i, 1);
+    setList(newList);
+  };
+
   return (
     <div className="App">
       <section>
+        <label className="label">New Item</label>
+
+        <input
+          className="inp"
+          type="textfield"
+          value={user}
+          onChange={(e) => {
+            setUser(e.target.value);
+          }}
+          onKeyDown={handleSubmit}
+        />
+
         <p>The Drag and Drop</p>
         <ul>
           {list.map((l, index) => {
@@ -120,6 +149,23 @@ function App() {
                 >
                   {l.icon}
                 </i>
+                <div style={{ textAlign: "center" }}>
+                  <button
+                    onClick={() => {
+                      handleRemove(index);
+                    }}
+                    class="material-icons"
+                    style={{
+                      fontSize: "28px",
+                      color: "#f78fb3",
+
+                      marginLeft: "10%",
+                    }}
+                  >
+                    {" "}
+                    close
+                  </button>
+                </div>
               </li>
             );
           })}
