@@ -84,3 +84,25 @@ p {
   padding: 12px 20px;
   border-radius: 20px;
 }
+
+.availableAnimals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+  max-width: 200px;
+  margin: 20px auto 0;
+}
+
+.droppableArea {
+  background: black;
+  border: 2px solid red;
+  border-radius: 8px;
+  padding: 20px;
+  width: 215px;
+  margin: 20px auto;
+  position: relative;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}

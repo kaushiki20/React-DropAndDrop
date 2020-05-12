@@ -20,8 +20,27 @@ const initialDNDState = {
 
 function App() {
   const [list, setList] = useState(items);
+  const [diff, setDiff] = useState(false);
   const [user, setUser] = useState("");
   const [dragAndDrop, setDragAndDrop] = useState(initialDNDState);
+
+  const animals = [
+    "🐈",
+    "🐶",
+    "🐻",
+    "🦜",
+    "🐢",
+    "🐴",
+    "🐭",
+    "🐹",
+    "🐬",
+    "🐮",
+    "🐷",
+    "🐒",
+    "🐥",
+    "🦄",
+    "🦊",
+  ];
 
   const onDragStart = (event) => {
     const initialPosition = Number(event.currentTarget.dataset.position);
@@ -103,57 +122,85 @@ function App() {
     setList(newList);
   };
 
+  const dragStart = (e) => {
+    console.log("dragging ", e.target.id);
+
+    e.dataTransfer.setData("animal", e.target.id);
+  };
+  const drop = (e) => {
+    const thingBeingDragged = e.dataTransfer.getData("animal");
+    e.target.appendChild(document.getElementById(thingBeingDragged));
+
+    // Remove the highlight
+    // because the onDragLeave won't fire after onDrop
+    e.target.classList.remove("activeDropArea");
+  };
+
+  const allowDrop = (e) => {
+    // The default action of onDragOver
+    // is to cancel the drop operation  -.-
+    // so we need to prevent that
+    e.preventDefault();
+  };
+
+  //second type of drag an drop functions
+
+  const dragEnter = (e) => {
+    // Drag Enter is used to
+    // highlight the drop area
+    e.target.classList.add("activeDropArea");
+  };
+
+  const dragLeave = (e) => {
+    // Drag Leave is used to
+    // remove the highlight in the drop area
+    e.target.classList.remove("activeDropArea");
+  };
+
   return (
     <div className="App">
-      <section>
-        <label className="label">New Item</label>
+      <button
+        onClick={() => {
+          setDiff(!diff);
+        }}
+      >
+        Other Type of Drag and Drop
+      </button>
+      {diff ? (
+        <section>
+          <label className="label">New Item</label>
 
-        <input
-          className="inp"
-          type="textfield"
-          value={user}
-          onChange={(e) => {
-            setUser(e.target.value);
-          }}
-          onKeyDown={handleSubmit}
-        />
+          <input
+            className="inp"
+            type="textfield"
+            value={user}
+            onChange={(e) => {
+              setUser(e.target.value);
+            }}
+            onKeyDown={handleSubmit}
+          />
 
-        <p>The Drag and Drop</p>
-        <ul>
-          {list.map((l, index) => {
-            return (
-              <li
-                key={index}
-                data-position={index}
-                draggable
-                onDragStart={onDragStart}
-                onDragOver={onDragOver}
-                onDrop={onDrop}
-                onDragLeave={onDragLeave}
-                className={
-                  dragAndDrop && dragAndDrop.draggedTo === Number(index)
-                    ? "dropArea"
-                    : ""
-                }
-              >
-                <span>{l.number}</span>
-                <p>{l.title}</p>
-                <i
-                  class="material-icons"
-                  style={{
-                    fontSize: "28px",
-                    color: "#f78fb3",
-
-                    marginLeft: "10%",
-                  }}
+          <p>The Drag and Drop</p>
+          <ul>
+            {list.map((l, index) => {
+              return (
+                <li
+                  key={index}
+                  data-position={index}
+                  draggable
+                  onDragStart={onDragStart}
+                  onDragOver={onDragOver}
+                  onDrop={onDrop}
+                  onDragLeave={onDragLeave}
+                  className={
+                    dragAndDrop && dragAndDrop.draggedTo === Number(index)
+                      ? "dropArea"
+                      : ""
+                  }
                 >
-                  {l.icon}
-                </i>
-                <div style={{ textAlign: "center" }}>
-                  <button
-                    onClick={() => {
-                      handleRemove(index);
-                    }}
+                  <span>{l.number}</span>
+                  <p>{l.title}</p>
+                  <i
                     class="material-icons"
                     style={{
                       fontSize: "28px",
@@ -162,15 +209,63 @@ function App() {
                       marginLeft: "10%",
                     }}
                   >
-                    {" "}
-                    close
-                  </button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
+                    {l.icon}
+                  </i>
+                  <div style={{ textAlign: "center" }}>
+                    <button
+                      onClick={() => {
+                        handleRemove(index);
+                      }}
+                      class="material-icons"
+                      style={{
+                        fontSize: "28px",
+                        color: "#f78fb3",
+
+                        marginLeft: "10%",
+                      }}
+                    >
+                      {" "}
+                      close
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : (
+        <div>
+          <div>
+            <ul>
+              {animals.map((animal) => (
+                // <DraggableThing
+                //   style={{ fontSize: "40px " }}
+                //   key={animal}
+                //   id={animal}
+                // />
+                <li
+                  className="availableAnimals"
+                  key={animal}
+                  id={animal}
+                  draggable="true"
+                  onDragStart={dragStart}
+                >
+                  {animal}
+                </li>
+              ))}
+            </ul>
+            <div
+              className="droppableArea"
+              onDrop={drop}
+              onDragOver={allowDrop}
+              onDragEnter={dragEnter}
+              onDragLeave={dragLeave}
+            >
+              <p>picked animals 🤲</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
